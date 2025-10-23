@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Central de Ajuda</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #d1d1d1;
+      margin: 0;
+      padding: 20px;
+    }
+
+    /* Container principal: verde sólido no topo */
+    .page-container {
+      border-radius: 25px;
+      overflow: hidden;
+      max-width: 1400px;
+      margin: 0 auto;
+      background-color: #386641;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Navbar */
+    .navbar-custom {
+      background: transparent;
+      padding: 1rem 2rem;
+    }
+
+    .navbar-custom .nav-link,
+    .navbar-custom .navbar-brand {
+      color: #fff !important;
+      font-weight: 500;
+    }
+
+    .navbar-custom .active {
+      border-bottom: 2px solid #fff;
+    }
+
+    .navbar-custom .nav-link:hover {
+      opacity: 0.9;
+    }
+
+    .profile-link {
+      display: flex;
+      align-items: center;
+      background-color: #fff;
+      color: #386641;
+      border-radius: 30px;
+      padding: 5px 15px 5px 5px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .profile-link:hover {
+      background-color: #E7E7E4;
+    }
+
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-left: 10px;
+    }
+
+    .profile-pic img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Conteúdo branco */
+    main {
+      background-color: #fff;
+      border-radius: 25px 25px 0 0;
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #386641;
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+
+    .search-container {
+      position: relative;
+      max-width: 700px;
+      margin: 0 auto 50px auto;
+    }
+
+    /* 🔹 Modificação: barra de pesquisa acinzentada */
+    .search-container input {
+      border-radius: 30px;
+      padding: 15px 160px 15px 25px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      background-color: #f2f2f2; /* Cinza claro */
+    }
+
+    .search-container button {
+      position: absolute;
+      right: 7px;
+      top: 7px;
+      bottom: 7px;
+      border-radius: 25px;
+      background-color: #386641;
+      color: #fff;
+      border: none;
+      padding: 0 30px;
+      transition: background-color 0.3s;
+    }
+
+    .search-container button:hover {
+      background-color: #2a4b30;
+    }
+
+    /* Perguntas Frequentes */
+    .faq-section h5 {
+      color: #386641;
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+      margin-bottom: 70px;
+      justify-items: center;
+    }
+
+    .faq-card {
+      background-color: #E7E7E4;
+      border-left: 6px solid #386641;
+      border-radius: 15px;
+      padding: 25px 25px;
+      width: 90%;
+      max-width: 350px;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .faq-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-card p {
+      margin: 0;
+      font-weight: 500;
+      color: #000;
+      text-align: left;
+      font-size: 1.05rem;
+    }
+
+    .faq-card i {
+      font-size: 1.8rem;
+      color: #386641;
+    }
+
+    /* Contatos */
+    .contact-section {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+
+    .contact-card {
+      background-color: #386641;
+      color: #fff;
+      border-radius: 20px;
+      padding: 35px;
+      text-align: center;
+      width: 300px;
+      transition: all 0.2s;
+    }
+
+    .contact-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .contact-card i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .contact-card h3 {
+      font-weight: 600;
+      margin: 10px 0;
+      color: #fff;
+    }
+
+    .contact-card p {
+      margin: 4px 0;
+      font-size: 1rem;
+      color: #E7E7E4;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-container">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+      <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <img src="img/logo.png" alt="Logo" width="45" height="45" class="me-2 rounded-circle">
+        </a>
+        <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link active" href="tela_inicial.html"><i class="bi bi-house-door-fill"></i> Página Inicial</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-chat-left-dots-fill"></i> Fóruns</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-megaphone-fill"></i> Divulgação</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-file-earmark-text-fill"></i> Materiais</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-geo-alt-fill"></i> Mapa</a></li>
+          </ul>
+
+          <a href="#" class="profile-link">
+            <span>Olá, Fulano de tal</span>
+            <div class="profile-pic">
+              <img src="img/macaco.jpg" alt="Perfil">
+            </div>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Conteúdo -->
+    <main>
+      <h1>Como podemos te ajudar?</h1>
+      <div class="search-container">
+        <input type="text" class="form-control" placeholder="Digite o assunto que precisa de ajuda... Ex: onde encontrar os materiais">
+        <button><i class="bi bi-search"></i> Pesquisar</button>
+      </div>
+
+      <section class="faq-section">
+        <h5>Perguntas frequentes</h5>
+        <div class="faq-grid">
+          <div class="faq-card">
+            <p>Não consigo acessar com meu e-mail institucional, o que pode ser?</p>
+            <i class="bi bi-chevron-right"></i>
+          </div>
+          <div class="faq-card">
+            <p>Como visualizar detalhes sobre um bloco ou laboratório no mapa?</p>
+            <i class="bi bi-chevron-right"></i>
+          </div>
+          <div class="faq-card">
+            <p>Posso criar novos tópicos ou apenas responder?</p>
+            <i class="bi bi-chevron-right"></i>
+          </div>
+          <div class="faq-card">
+            <p>Posso favoritar materiais para acesso rápido?</p>
+            <i class="bi bi-chevron-right"></i>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section">
+        <div class="contact-card">
+          <i class="bi bi-envelope-fill"></i>
+          <h3>E-mail</h3>
+          <p>Suporte</p>
+          <p>contato@ifrn.edu.br</p>
+        </div>
+        <div class="contact-card">
+          <i class="bi bi-whatsapp"></i>
+          <h3>Whatsapp</h3>
+          <p>Suporte</p>
+          <p>(84) 9 8888-8888</p>
+        </div>
+        <div class="contact-card">
+          <i class="bi bi-telephone-fill"></i>
+          <h3>Telefone</h3>
+          <p>Suporte</p>
+          <p>(84) 9 9999-9999</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

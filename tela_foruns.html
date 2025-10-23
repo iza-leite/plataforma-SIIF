@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface de Fórum Responsiva</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #EAF0E5;
+        }
+        .main-container {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            border: 8px solid #2F6D4F;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .primary-green-bg {
+            background-color: #2F6D4F;
+        }
+        .primary-green-text {
+            color: #2F6D4F;
+        }
+        .primary-green-border {
+            border-color: #2F6D4F;
+        }
+        .hover-text-white:hover {
+            color: #ffffff;
+        }
+        .notification-badge {
+            background-color: #FFD700;
+            color: #2F6D4F;
+        }
+        .post-card {
+            background-color: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        .post-action-button {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+        .post-action-button:hover {
+            background-color: #d1d5db;
+        }
+        .custom-checkbox:checked {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+            background-color: #2F6D4F;
+            border-color: #2F6D4F;
+        }
+        
+        /* --- ESTILOS DE COMPORTAMENTO DO COMENTÁRIO --- */
+        .comment-toggle { display: none; }
+        .comments-section { display: none; }
+        .comment-toggle:checked ~ .comments-section { display: block; }
+        .comment-icon-arrow { transform: rotate(180deg); }
+        .new-comment-box { background-color: #e5e7eb; color: #374151; }
+        .single-comment-card { background-color: #EAF0E5; border-radius: 0.5rem; }
+        .comment-toggle-label:active { filter: brightness(0.9); }
+        
+        /* --- ESTILOS PARA O MENU DE 3 PONTOS EM COMENTÁRIOS (POPUP) --- */
+        /* O menu dropdown de comentários estava com problemas de visibilidade. */
+        .comment-options-toggle { display: none; }
+        .comment-options-menu {
+            /* Esconde por padrão e posiciona o menu de opções */
+            display: none;
+            /* As classes Tailwind `absolute right-0 mt-2 min-w-max z-10` foram adicionadas ao HTML para melhor controle. */
+            margin-top: 10px; /* Adicionado espaço para o triângulo */
+        }
+        .comment-options-toggle:checked ~ .comment-options-menu {
+            /* Exibe o menu quando o checkbox está marcado (clicado) */
+            display: block;
+        }
+
+        /* Cria a borda (cinza claro) do triângulo (elemento mais externo) */
+        .comment-options-menu::after {
+            content: '';
+            position: absolute;
+            top: -12px; /* Posição ajustada para a borda */
+            right: 14px;
+            width: 0;
+            height: 0;
+            
+            border-left: 11px solid transparent;
+            border-right: 11px solid transparent;
+            border-bottom: 12px solid #D1D5DB; /* Cor da borda do menu */
+            
+            z-index: 10;
+        }
+
+        /* Cria o triângulo interno (fundo branco) */
+        .comment-options-menu::before {
+            content: '';
+            position: absolute;
+            top: -10px; /* 2px abaixo da borda */
+            right: 15px;
+            width: 0;
+            height: 0;
+            
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid #FFFFFF; /* Cor do fundo do menu */
+            
+            z-index: 20; 
+        }
+
+        /* --- ESTILO PADRÃO PARA AVATARES (FOTOS DE CONTATO) --- */
+        .contact-avatar {
+            /* Garante que avatares tenham sempre fundo branco e borda verde */
+            border: 2px solid #2F6D4F; /* primary-green-border (simulado) */
+            background-color: #FFFFFF; /* Fundo branco */
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1); /* Sombra suave, opcional */
+        }
+
+        /* --- ESTILOS DE INPUT DE BUSCA --- */
+        .search-input {
+            border: none;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.2s;
+        }
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #EAF0E5, 0 0 0 4px #2F6D4F;
+        }
+
+        /* --- RESPONSIVIDADE DO MENU LATERAL (Perfil, Notificações) --- */
+        .left-sidebar {
+            display: none;
+        }
+        @media (min-width: 768px) {
+            .left-sidebar {
+                display: flex !important;
+            }
+        }
+
+        /* --- RESPONSIVIDADE DA BARRA DE NAVEGAÇÃO SUPERIOR --- */
+        @media (max-width: 767px) {
+            .header-nav-links {
+                display: none;
+            }
+            .header-profile-text {
+                display: none;
+            }
+            .header-profile-img {
+                height: 40px;
+                width: 40px;
+            }
+            .header-logo {
+                margin-right: 0.5rem;
+            }
+        }
+        
+        /* --- RESPONSIVIDADE DOS FILTROS (Relevância, Professores) --- */
+        @media (max-width: 1023px) {
+            .right-sidebar {
+                display: none;
+            }
+        }
+
+        .mobile-filter-toggle:checked ~ .mobile-filter-menu {
+            display: block;
+        }
+        .mobile-filter-menu {
+            display: none;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+
+    <div class="main-container max-w-7xl mx-auto p-4 sm:p-6">
+        <header class="primary-green-bg rounded-xl shadow-sm px-4 sm:px-6 py-3 mb-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4 sm:space-x-8">
+                    <a>Logo</a>
+                    <nav class="header-nav-links hidden lg:flex items-center space-x-4 lg:space-x-6">
+                        <a href="#" class="flex items-center space-x-1 sm:space-x-2 text-white/80 hover-text-white transition-colors duration-200 text-sm lg:text-base">
+                            <span class="font-medium">Página Inicial</span>
+                        </a>
+                        <a href="#forum-content" class="forum-link flex items-center space-x-1 sm:space-x-2 text-white font-bold text-sm lg:text-base">
+                            <span class="font-medium">Fóruns</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-1 sm:space-x-2 text-white/80 hover-text-white transition-colors duration-200 text-sm lg:text-base">
+                            <span class="font-medium">Divulgação</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-1 sm:space-x-2 text-white/80 hover-text-white transition-colors duration-200 text-sm lg:text-base">
+                            <span class="font-medium">Materiais</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-1 sm:space-x-2 text-white/80 hover-text-white transition-colors duration-200 text-sm lg:text-base">
+                            <span class="font-medium">Mapa</span>
+                        </a>
+                    </nav>
+                    <button class="md:hidden text-white/80 hover:text-white transition-colors duration-200">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+                    </button>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="text-white hidden sm:block header-profile-text">Olá, Fulano de tal</span>
+                    <img class="h-10 w-10 rounded-full object-cover header-profile-img contact-avatar" src="https://placehold.co/40x40/E2E8F0/4A5568?text=F" alt="Foto do perfil do usuário">
+                </div>
+            </div>
+        </header>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-6">
+
+            <aside class="left-sidebar md:col-span-1 lg:col-span-1 primary-green-bg text-white p-6 rounded-2xl flex flex-col h-fit">
+    <div class="space-y-4 flex-grow">
+        <a href="#" class="flex items-center space-x-3 text-lg opacity-80 hover:opacity-100 transition-opacity duration-200">
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+            <span>Perfil</span>
+        </a>
+        <a href="#" class="flex items-center justify-between text-lg font-semibold">
+            <div class="flex items-center space-x-3 min-w-0 flex-shrink">
+                <svg class="h-6 w-6 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                <span class="truncate">Notificações</span>
+            </div>
+            <span class="notification-badge text-sm font-bold px-2 py-0.5 rounded-full flex-shrink-0">230</span>
+            </a>
+        <a href="#" class="flex items-center space-x-3 text-lg opacity-80 hover:opacity-100 transition-opacity duration-200">
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.5 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" /></svg>
+            <span>Posts salvos</span>
+        </a>
+                <div class="mt-12">
+                    <a href="janela.html" class="bg-white primary-green-text w-full font-bold py-3 px-4 rounded-xl shadow-md hover:bg-gray-100 transition-colors duration-200 text-center block">
+                        Novo Post
+                    </a>
+                </div>
+            </aside>
+
+            <main id="forum-content" class="col-span-full md:col-span-3 lg:col-span-3 space-y-4">
+                
+                <div class="flex items-center space-x-3">
+                    <div class="relative flex-grow">
+                        <input type="text" placeholder="Buscar" class="search-input w-full py-3 pl-12 pr-4 text-gray-700 bg-white rounded-xl">
+                        <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 primary-green-text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
+                    </div>
+
+                    <div class="block lg:hidden">
+                        <input type="checkbox" id="mobile-filter-toggle" class="mobile-filter-toggle hidden">
+                        <label for="mobile-filter-toggle" class="primary-green-bg text-white p-3 rounded-xl cursor-pointer hover:bg-green-700 transition-colors duration-200">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mobile-filter-menu bg-white p-4 rounded-xl shadow-md space-y-4 border border-gray-200 block lg:hidden">
+                    <div>
+                        <h4 class="font-semibold primary-green-text mb-3">Ordenar por:</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2 text-gray-600">
+                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 custom-checkbox">
+                                <span>Relevância</span>
+                            </label>
+                            <label class="flex items-center space-x-2 text-gray-600">
+                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 custom-checkbox" checked>
+                                <span>Mais recente</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold primary-green-text mb-3">Exibir publicações:</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2 text-gray-600">
+                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 custom-checkbox">
+                                <span>Professores</span>
+                            </label>
+                            <label class="flex items-center space-x-2 text-gray-600">
+                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 custom-checkbox">
+                                <span>Estudantes</span>
+                            </label>
+                            <label class="flex items-center space-x-2 text-gray-600">
+                                <input type="checkbox" class="h-5 w-5 rounded border-gray-300 custom-checkbox">
+                                <span>Servidores</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <article class="post-card">
+                    <div class="primary-green-bg text-white p-4 flex items-start justify-between">
+                        <div class="flex items-center space-x-3">
+                            <img class="h-10 w-10 rounded-full object-cover contact-avatar" src="" alt="Imagem de perfil">
+                            <div>
+                                <h3 class="font-bold">Aluno 1</h3>
+                            </div>
+                        </div>
+                        <button class="text-white/70 hover:text-white">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-gray-700">Alguém tem fotos do Lajedo? Estou precisando para meu TCC :/</p>
+                        <div class="mt-4">
+                            <img class="w-full h-auto rounded-lg object-cover" src="https://images.unsplash.com/photo-1593492283935-985856b3a38e?q=80&w=1932&auto=format&fit=crop" alt="Imagem de formações rochosas de Lajedo">
+                        </div>
+                    </div>
+
+                    <input type="checkbox" id="toggle-comments-post-1" class="comment-toggle" checked>
+                    <div class="primary-green-bg p-4 flex items-center space-x-4 text-sm overflow-x-auto">
+                        <button class="flex items-center space-x-1.5 post-action-button py-1.5 px-3 rounded-full flex-shrink-0 transition-colors duration-200">
+                            <span class="font-semibold primary-green-text">2</span>
+                            <span>Relevante</span>
+                        </button>
+                        
+                        <label for="toggle-comments-post-1" class="comment-toggle-label flex items-center space-x-1.5 post-action-button py-1.5 px-3 rounded-full flex-shrink-0 transition-colors duration-200 cursor-pointer">
+                            <span class="font-semibold primary-green-text">2</span>
+                            <span>Comentários</span>
+                        </label>
+                        
+                        <button class="flex items-center space-x-1.5 post-action-button py-1.5 px-3 rounded-full flex-shrink-0 transition-colors duration-200">
+                            <svg class="h-4 w-4 primary-green-text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 3.75a.75.75 0 01.75.75v1.5h1.5a.75.75 0 010 1.5h-1.5v1.5a.75.75 0 01-1.5 0v-1.5h-1.5a.75.75 0 010-1.5h1.5v-1.5a.75.75 0 01.75-.75z" /><path fill-rule="evenodd" d="M5.5 8.5A2.5 2.5 0 008 11h4a2.5 2.5 0 002.5-2.5V8a.5.5 0 011 0v.5a3.5 3.5 0 01-3.5 3.5H8A3.5 3.5 0 014.5 8.5V8a.5.5 0 011 0v.5zM5 4.75A.75.75 0 015.75 4h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 4.75z" clip-rule="evenodd" /></svg>
+                            <span>Compartilhar</span>
+                        </button>
+                    </div>
+                    
+                    <div class="comments-section bg-white p-4 pt-0 border-t border-gray-200">
+                        <div class="flex justify-between items-center mb-3">
+                            <svg class="h-5 w-5 primary-green-text comment-icon-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-10.75a.75.75 0 00-1.5 0v4.5c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V7.25z" clip-rule="evenodd" />
+                                <path fill-rule="evenodd" d="M12.5 10a.5.5 0 01.5.5v.5a.5.5 0 01-1 0v-.5a.5.5 0 01.5-.5z" clip-rule="evenodd" />
+                            </svg>
+                            <h4 class="font-semibold text-gray-700">Comentários</h4>
+                            <a href="janela2.html" class="new-comment-box primary-green-text font-semibold py-1 px-3 rounded-full text-sm hover:bg-gray-300 transition-colors duration-200">
+                                Comentar
+                            </a>
+                        </div>
+                        
+                        <div class="space-y-3">
+                    
+                            <div class="single-comment-card p-3 flex space-x-3">
+                                <img class="h-8 w-8 rounded-full object-cover contact-avatar" src="" alt="Imagem de perfil">
+                                <div class="flex-1">
+                                    <p class="font-bold text-sm primary-green-text">Aluno 11</p>
+                                    <p class="text-sm text-gray-700">Procura no site oficial. Tem várias! </p>
+                                </div>
+                                
+                                <div class="self-start relative"> 
+                                    
+                                    <input type="checkbox" id="comment-options-1" class="comment-options-toggle hidden">
+
+                                    <label for="comment-options-1" class="text-gray-500 hover:text-gray-800 transition-colors cursor-pointer block p-1 -m-1">
+                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
+                                    </label>
+
+                                    <div class="comment-options-menu bg-white border-2 border-gray-300 rounded-xl shadow-lg p-3 space-y-2 absolute right-0 mt-2 min-w-max z-10">
+                                        <a href="#" class="flex items-center space-x-3 text-sm text-gray-700 hover:bg-gray-100 p-1.5 rounded-lg transition-colors duration-150">
+                                            <svg class="h-5 w-5 primary-green-text" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.5 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" /></svg>
+                                            <span>Salvar Post</span>
+                                        </a>
+                                        <a href="#" class="flex items-center space-x-3 text-sm text-gray-700 hover:bg-gray-100 p-1.5 rounded-lg transition-colors duration-150">
+                                            <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 6a2 2 0 012-2h11.5a.5.5 0 010 1H5a1 1 0 00-1 1v10.5a.5.5 0 01-1 0V6z" clip-rule="evenodd" /></svg>
+                                            <span class="text-red-500">Denunciar</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="single-comment-card p-3 flex space-x-3 relative"> 
+                                <img class="h-8 w-8 rounded-full object-cover contact-avatar" src="" alt="Imagem de perfil">
+                                <div class="flex-1">
+                                    <p class="font-bold text-sm primary-green-text">Aluno 404</p>
+                                    <p class="text-sm text-gray-700">Não</p>
+                                </div>
+
+                                <div class="self-start relative"> 
+                                    
+                                    <input type="checkbox" id="comment-options-404" class="comment-options-toggle hidden">
+
+                                    <label for="comment-options-404" class="text-gray-500 hover:text-gray-800 transition-colors cursor-pointer block p-1 -m-1">
+                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
+                                    </label>
+
+                                    <div class="comment-options-menu bg-white border-2 border-gray-300 rounded-xl shadow-lg p-3 space-y-2 absolute right-0 mt-2 min-w-max z-10">
+                                        
+                                        <a href="#" class="flex items-center space-x-3 text-sm text-gray-700 hover:bg-gray-100 p-1.5 rounded-lg transition-colors duration-150">
+                                            <svg class="h-5 w-5 primary-green-text" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.5 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" /></svg>
+                                            <span>Salvar Post</span>
+                                        </a>
+                                        
+                                        <a href="#" class="flex items-center space-x-3 text-sm text-gray-700 hover:bg-gray-100 p-1.5 rounded-lg transition-colors duration-150">
+                                            <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                                            <span class="text-red-500">Excluir Post</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="post-card">
+                    <div class="primary-green-bg text-white p-4 flex items-start justify-between">
+                        <div class="flex items-center space-x-3">
+                            <img class="h-10 w-10 rounded-full object-cover contact-avatar" src="" alt="Foto de perfil">
+                            <div>
+                                <h3 class="font-bold">Aluno 12</h3>
+                            </div>
+                        </div>
+                        <button class="text-white/70 hover:text-white">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-gray-700">Jackson vai mesmo deixar o campus????<br>Eu ainda nem superei Wigna!! :(</p>
+                    </div>
+                    
+                    <input type="checkbox" id="toggle-comments-post-2" class="comment-toggle">
+
+                    <div class="primary-green-bg p-4 flex items-center space-x-4 text-sm overflow-x-auto">
+                        <button class="flex items-center space-x-1.5 post-action-button py-1.5 px-3 rounded-full flex-shrink-0 transition-colors duration-200">
+                            <span class="font-semibold primary-green-text">1</span>
+                            <span>Relevante</span>
+                        </button>
+                        <label for="toggle-comments-post-2" class="comment-toggle-label flex items-center space-x-1.5 post-action-button py-1.5 px-3 rounded-full flex-shrink-0 transition-colors duration-200 cursor-pointer">
+                            <span class="font-semibold primary-green-text">0</span>
+                            <span>Comentários</span>
+                        </label>
+                        <button class="flex items-center space-x-1.5 post-action-button py-1.5 px-3 rounded-full flex-shrink-0 transition-colors duration-200">
+                            <svg class="h-4 w-4 primary-green-text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 3.75a.75.75 0 01.75.75v1.5h1.5a.75.75 0 010 1.5h-1.5v1.5a.75.75 0 01-1.5 0v-1.5h-1.5a.75.75 0 010-1.5h1.5v-1.5a.75.75 0 01.75-.75z" /><path fill-rule="evenodd" d="M5.5 8.5A2.5 2.5 0 008 11h4a2.5 2.5 0 002.5-2.5V8a.5.5 0 011 0v.5a3.5 3.5 0 01-3.5 3.5H8A3.5 3.5 0 014.5 8.5V8a.5.5 0 011 0v.5zM5 4.75A.75.75 0 015.75 4h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 4.75z" clip-rule="evenodd" /></svg>
+                            <span>Compartilhar</span>
+                        </button>
+                    </div>
+
+                    <div class="comments-section bg-white p-4 pt-0 border-t border-gray-200">
+                        <div class="flex justify-between items-center mb-3">
+                            <svg class="h-5 w-5 primary-green-text comment-icon-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-10.75a.75.75 0 00-1.5 0v4.5c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V7.25z" clip-rule="evenodd" />
+                                <path fill-rule="evenodd" d="M12.5 10a.5.5 0 01.5.5v.5a.5.5 0 01-1 0v-.5a.5.5 0 01.5-.5z" clip-rule="evenodd" />
+                            </svg>
+                            <h4 class="font-semibold text-gray-700">Comentários</h4>
+                            <a href="janela2.html" class="new-comment-box primary-green-text font-semibold py-1 px-3 rounded-full text-sm hover:bg-gray-300 transition-colors duration-200">
+                                Comentar
+                            </a>
+                        </div>
+                        <p class="text-sm text-center text-gray-500 italic">Seja o primeiro a comentar!</p>
+                    </div>
+                </article>
+
+                <article class="post-card">
+                    <div class="primary-green-bg text-white p-4 flex items-start justify-between">
+                        <div class="flex items-center space-x-3">
+                            <img class="h-10 w-10 rounded-full object-cover contact-avatar" src="" alt="Foto de perfil">
+                            <div>
+                                <h3 class="font-bold">Servidor 15</h3>
+                            </div>
+                        </div>
+                        <button class="text-white/70 hover:text-white">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" /></svg>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-gray-700">Texto</p>
+                    </div>
+                    
+                    <input type="checkbox" id="toggle-comments-post-3" class="comment-toggle">
+
+                    <div class="primary-green-bg p-4 flex items-center space-x-4 text-sm overflow-x-auto">
+                        <button class="flex items-center space-x-1.5 post-action-button py-1.5 px-3 rounded-full flex-shrink-0 transition-colors duration-200">
+                            <span class="font-semibold primary-green-text">5</span>
+                            <span>Relevante</span>
+                        </button>
+                        <label for="toggle-comments-post-3" class="comment-toggle-label flex items-center space-x-1.5 post-action-button py-1.5 px-3 rounded-full flex-shrink-0 transition-colors duration-200 cursor-pointer">
+                            <span class="font-semibold primary-green-text">0</span>
+                            <span>Comentário</span>
+                        </label>
+                        <button class="flex items-center space-x-1.5 post-action-button py-1.5 px-3 rounded-full flex-shrink-0 transition-colors duration-200">
+                            <svg class="h-4 w-4 primary-green-text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 3.75a.75.75 0 01.75.75v1.5h1.5a.75.75 0 010 1.5h-1.5v1.5a.75.75 0 01-1.5 0v-1.5h-1.5a.75.75 0 010-1.5h1.5v-1.5a.75.75 0 01.75-.75z" /><path fill-rule="evenodd" d="M5.5 8.5A2.5 2.5 0 008 11h4a2.5 2.5 0 002.5-2.5V8a.5.5 0 011 0v.5a3.5 3.5 0 01-3.5 3.5H8A3.5 3.5 0 014.5 8.5V8a.5.5 0 011 0v.5zM5 4.75A.75.75 0 015.75 4h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 4.75z" clip-rule="evenodd" /></svg>
+                            <span>Compartilhar</span>
+                        </button>
+                    </div>
+
+                    <div class="comments-section bg-white p-4 pt-0 border-t border-gray-200">
+                        <div class="flex justify-between items-center mb-3">
+                            <svg class="h-5 w-5 primary-green-text comment-icon-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-10.75a.75.75 0 00-1.5 0v4.5c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V7.25z" clip-rule="evenodd" />
+                                <path fill-rule="evenodd" d="M12.5 10a.5.5 0 01.5.5v.5a.5.5 0 01-1 0v-.5a.5.5 0 01.5-.5z" clip-rule="evenodd" />
+                            </svg>
+                            <h4 class="font-semibold text-gray-700">Comentários</h4>
+                            <a href="janela2.html" class="new-comment-box primary-green-text font-semibold py-1 px-3 rounded-full text-sm hover:bg-gray-300 transition-colors duration-200">
+                                Comentar
+                            </a>
+                        </div>
+                        <p class="text-sm text-center text-gray-500 italic">Seja o primeiro a comentar!</p>
+                    </div>
+                </article>
+
+            </main>
+
+            <aside class="right-sidebar lg:col-span-1 bg-white p-6 rounded-2xl flex flex-col h-fit space-y-6">
+                <div>
+                    <h4 class="font-semibold primary-green-text mb-3">Ordenar por:</h4>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-2 text-gray-600">
+                            <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-green focus:ring-transparent custom-checkbox">
+                            <span>Relevância</span>
+                        </label>
+                        <label class="flex items-center space-x-2 text-gray-600">
+                            <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-green focus:ring-transparent custom-checkbox" checked>
+                            <span>Mais recente</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold primary-green-text mb-3">Exibir publicações:</h4>
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-2 text-gray-600">
+                            <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-green focus:ring-transparent custom-checkbox">
+                            <span>Professores</span>
+                        </label>
+                        <label class="flex items-center space-x-2 text-gray-600">
+                            <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-green focus:ring-transparent custom-checkbox">
+                            <span>Estudantes</span>
+                        </label>
+                        <label class="flex items-center space-x-2 text-gray-600">
+                            <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-green focus:ring-transparent custom-checkbox">
+                            <span>Servidores</span>
+                        </label>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    
+</body>
+</html>

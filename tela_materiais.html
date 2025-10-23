@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Acadêmico - Materiais</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <a href="#conteudo" class="skip-link">Pular para o conteúdo principal</a>
+
+  <header class="header" role="banner">
+    <nav class="navbar" aria-label="Menu principal">
+      <div class="nav-left">
+        <span class="logo" aria-hidden="true">⨀</span>
+        <a href="#" class="nav-item" aria-current="page"><i class="fa-solid fa-home"></i> Página Inicial</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-users"></i> Fóruns</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-bullhorn"></i> Divulgação</a>
+        <a href="#" class="nav-item active"><i class="fa-solid fa-book"></i> Materiais</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-map"></i> Mapa</a>
+      </div>
+
+      <div class="nav-right" role="status" aria-live="polite">
+        <img src="https://via.placeholder.com/40" alt="Foto de perfil de Fulano de Tal" class="user-avatar" />
+        <span class="user-name">Olá, Fulano de Tal</span>
+      </div>
+    </nav>
+  </header>
+
+  <main id="conteudo" role="main" class="main-content">
+    <div class="top-panels">
+      <section class="filter-panel" aria-labelledby="filtro-titulo">
+        <h2 id="filtro-titulo">Filtrar</h2>
+        <form>
+          <label for="curso">Curso</label>
+          <select id="curso" name="curso">
+            <option>Informática</option>
+          </select>
+
+          <label for="olimpiada">Olimpíada</label>
+          <select id="olimpiada" name="olimpiada">
+            <option>ONC</option>
+          </select>
+
+          <button type="submit" class="btn-primary">Aplicar filtro</button>
+        </form>
+      </section>
+
+      <section class="search-panel" aria-labelledby="pesquisar-titulo">
+        <h2 id="pesquisar-titulo">Pesquisar</h2>
+        <form role="search" aria-label="Buscar materiais">
+          <label for="buscar" class="sr-only">Buscar materiais</label>
+          <input type="search" id="buscar" placeholder="Livro..." aria-label="Campo de busca" />
+          <button type="submit" class="btn-search" aria-label="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+        <button class="btn-secondary">Buscar</button>
+      </section>
+    </div>
+
+    <section class="materials-section">
+      <h2>Materiais Informática</h2>
+      <div class="material-group">
+        <h3><i class="fa-solid fa-file-code" aria-hidden="true"></i> Python</h3>
+        <div class="material-item">
+          <span>Introdução à Programação com Python</span>
+          <a href="#" class="access-button" aria-label="Acessar Introdução à Programação com Python">Acessar <i class="fa-solid fa-eye"></i></a>
+        </div>
+        <div class="material-item">
+          <span>Python para Análise de Dados</span>
+          <a href="#" class="access-button" aria-label="Acessar Python para Análise de Dados">Acessar <i class="fa-solid fa-eye"></i></a>
+        </div>
+      </div>
+
+      <div class="material-group">
+        <h3><i class="fa-solid fa-file-code" aria-hidden="true"></i> JavaScript</h3>
+      </div>
+
+      <h2>Materiais ONC</h2>
+      <div class="material-group">
+        <h3><i class="fa-solid fa-medal" aria-hidden="true"></i> Olimpíada Nacional de Ciências</h3>
+      </div>
+
+      <h2>Ementa</h2>
+      <div class="material-group">
+        <h3><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Curso Técnico em Informática</h3>
+        <div class="material-item">
+          <span>Técnico Integrado em Informática - 2024</span>
+          <a href="#" class="access-button" aria-label="Acessar Ementa Técnico Integrado em Informática 2024">Acessar <i class="fa-solid fa-eye"></i></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <a href="#" class="assistive-button" aria-label="Ativar modo acessível ou ajuda por voz">
+    <i class="fa-solid fa-headset" aria-hidden="true"></i>
+  </a>
+
+</body>
+</html>
