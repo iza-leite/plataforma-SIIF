@@ -16,7 +16,7 @@ body {
 }
 
 .page-container {
-  max-width: 1400px;
+  max-width: 1700px;
   margin: 0 auto;
   border-radius: 25px;
   overflow: hidden;
@@ -30,7 +30,7 @@ main {
   padding: 40px 50px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     main {
         padding: 30px 25px;
     }
